@@ -97,9 +97,9 @@ def write_config_file(config, events, connection, file=tempfile.mktemp()):
 def _write_header(output):
     output.write('<?xml version="1.0"?>\n')
     output.write('<agent\n')
-    output.write('xmlns="urn:proactive:agent:1.0:linux"\n')
+    output.write('xmlns="urn:proactive:agent:1.1:linux"\n')
     output.write('xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n')
-    output.write('xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.0/agent-linux.xsd">\n')
+    output.write('xsi:schemaLocation="urn:proactive:agent:1.1:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.1/agent-linux.xsd">\n')
 
 def _write_config(output, config):
     output.write('<config>\n')

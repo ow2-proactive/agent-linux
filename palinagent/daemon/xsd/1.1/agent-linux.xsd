@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:proactive:agent:1.1:linux"
+  xmlns="urn:proactive:agent:1.1:linux"
+  elementFormDefault="qualified">
+
+  <xsd:redefine schemaLocation="agent-common.xsd">
+    <xsd:complexType name="GlobalAgentConfigType">
+      <xsd:complexContent>
+        <xsd:extension base="GlobalAgentConfigType">
+          <xsd:sequence>
+            <xsd:element name="nice" minOccurs="0" maxOccurs="1">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:positiveInteger">
+                  <xsd:maxInclusive value="19"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="ionice" minOccurs="0" maxOccurs="1">
+              <xsd:complexType>
+                <xsd:attribute name="class" use="required">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:enumeration value="none"/>
+                      <xsd:enumeration value="realtime"/>
+                      <xsd:enumeration value="besteffort"/>
+                      <xsd:enumeration value="idle"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="classdata" use="optional">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:positiveInteger">
+                      <xsd:maxInclusive value="7"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:attribute>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="EventAgentConfigType">
+      <xsd:complexContent>
+        <xsd:extension base="EventAgentConfigType">
+          <xsd:sequence>
+            <xsd:element name="nice" minOccurs="0" maxOccurs="1">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:positiveInteger">
+                  <xsd:maxInclusive value="19"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="ionice" minOccurs="0" maxOccurs="1">
+              <xsd:complexType>
+                <xsd:attribute name="class" use="required">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:enumeration value="none"/>
+                      <xsd:enumeration value="realtime"/>
+                      <xsd:enumeration value="besteffort"/>
+                      <xsd:enumeration value="idle"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="classdata" use="optional">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:positiveInteger">
+                      <xsd:maxInclusive value="7"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:attribute>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ConfMemoryLimitationType">
+      <xsd:complexContent>
+        <xsd:extension base="ConfMemoryLimitationType">
+          <xsd:attribute name="cgroup_mount_point" type="nonEmptyString" use="optional"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:redefine>
+</xsd:schema>

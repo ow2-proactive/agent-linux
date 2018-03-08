@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified">
+
+
+  <!--
+                 /!\   PLEASE DO NOT REFORMAT THIS FILE /!\
+
+       This file is correctly formated and highly readable. Please do not ruin our efforts. Thanks !
+   -->
+
+
+  <!--  Root element -->
+
+  <xsd:element name="agent" type="AgentType">
+    <xsd:annotation><xsd:documentation>
+      A ProActive Agent configuration file
+    </xsd:documentation></xsd:annotation>
+  </xsd:element>
+
+
+  <xsd:complexType name="AgentType">
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="config" type="GlobalAgentConfigType">
+        <xsd:annotation><xsd:documentation>
+          The global configuration of the ProActive Agent. This configuration applies to all the events
+          unless if an event override it.
+        </xsd:documentation></xsd:annotation>
+      </xsd:element>
+      <xsd:element minOccurs="1" maxOccurs="1" name="events">
+        <xsd:annotation><xsd:documentation>
+          A list of events. The list cannot be empty
+        </xsd:documentation></xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" name="event" type="CalendarEventType" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element minOccurs="1" maxOccurs="1" name="connections">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" ref="Connection" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+
+
+
+  <!-- ACTIONS -->
+
+  <xsd:element name="Connection" abstract="true" type="ConnectionType"/>
+  <xsd:complexType name="ConnectionType" abstract="true">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The connection to be established when an event begin.
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+
+      <xsd:element minOccurs="0" maxOccurs="1" name="respawnIncrement" type="xsd:positiveInteger">
+        <xsd:annotation><xsd:documentation xml:lang="en">
+          The amount of time to wait before restarting the ProActive runtime (in seconds).
+
+          Each time a runtime dies, it is automatically restarted by the agent. To avoid system overloading, the agent waits for a given amount of time before restarting the runtime. This delay depends of the number of restart and the respawnincrement. The wait time is computed as follows: min(nb_restart * respawnIncrement, 180)
+        </xsd:documentation></xsd:annotation>
+      </xsd:element>
+
+      <xsd:element minOccurs="0" maxOccurs="1" name="javaStarterClass" type="javaClassName">
+        <xsd:annotation><xsd:documentation xml:lang="en">
+          The java class name to be started by the agent.
+          The element is optional since the agent will automatically starts the class
+          corresponding to the Connection if not specified. This element can be used to
+          override the defaut class if needed.
+        </xsd:documentation></xsd:annotation>
+      </xsd:element>
+
+      <xsd:element minOccurs="0" maxOccurs="1" name="nodename" type="nonEmptyString">
+        <xsd:annotation><xsd:documentation xml:lang="en">
+          The ProActive node name to be started
+        </xsd:documentation></xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+
+    <xsd:attribute name="enabled" type="xsd:boolean" use="required">
+      <xsd:annotation><xsd:documentation xml:lang="en">
+        True if this action is enabled. False otherwise
+        One and only one action can be enabled.
+      </xsd:documentation></xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+
+
+  <xsd:element name="localBind" substitutionGroup="Connection">
+    <xsd:complexType>
+      <xsd:annotation><xsd:documentation xml:lang="en">
+        Starts a ProActive node with a given name.
+        It is up to the infrastructure to discover this node by performing a lookup
+      </xsd:documentation></xsd:annotation>
+      <xsd:complexContent>
+        <xsd:extension base="ConnectionType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="rmConnection" substitutionGroup="Connection">
+    <xsd:complexType>
+      <xsd:annotation><xsd:documentation xml:lang="en">
+        Starts a ProActive node and register to a ProActive Resource Manager by
+        using a callback
+      </xsd:documentation></xsd:annotation>
+      <xsd:complexContent mixed="false">
+        <xsd:extension base="ConnectionType">
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="url" type="xsd:string">
+              <xsd:annotation><xsd:documentation xml:lang="en">
+                The URL of the ProActive Resource Manager, can be empty if discovery is used
+              </xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element minOccurs="0" maxOccurs="1" name="nodeSourceName" type="nonEmptyString">
+              <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of the ProActive Resource Manager node source
+              </xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element minOccurs="0" maxOccurs="1" name="credential" type="nonEmptyString">
+              <xsd:annotation><xsd:documentation xml:lang="en">
+                The path of the file containing the credentials to use to connect
+                to the ProActive Resource Manager. If not specified then the default credential is used
+              </xsd:documentation></xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="customConnection" substitutionGroup="Connection">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="ConnectionType">
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="args">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="1" maxOccurs="unbounded" name="arg" type="xsd:string">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                      The arguments to be passed to the java class
+                    </xsd:documentation></xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+
+
+
+  <!-- EVENTS -->
+
+  <xsd:complexType name="CalendarEventType">
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="start">
+        <xsd:complexType>
+          <xsd:attribute name="day" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The name of the starting day in the week
+              (lowercase)
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="Monday" />
+                <xsd:enumeration value="Tuesday" />
+                <xsd:enumeration value="Wednesday" />
+                <xsd:enumeration value="Thursday" />
+                <xsd:enumeration value="Friday" />
+                <xsd:enumeration value="Saturday" />
+                <xsd:enumeration value="Sunday" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+
+          <xsd:attribute name="hour" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The hour of the start, 24 hour format (0 to 23)
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="23" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+
+          <xsd:attribute name="minute"  use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The minute of the start (0 to 59)
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="59" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+
+          <xsd:attribute name="second" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The second of the start (0 to 59)
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="59" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element minOccurs="1" maxOccurs="1" name="duration">
+        <xsd:complexType>
+          <xsd:attribute name="days" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The number of days the event lasts (0 to 6).
+
+              Since this is a weekly planning, cannot be greater than 6.
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="6" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+
+          <xsd:attribute name="hours" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The number of hours the event lasts (0 to 23).
+
+              A number greater than 23 cannot be used to describe an event
+              lasting more than one day. The durationDays element must be used.
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="23" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+
+          <xsd:attribute name="minutes" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The number of minutes the event last (0 to 59)
+              A number greater than 59 cannot be used to describe an event
+              lasting more than one hour. The durationDays or durationHours
+              elements must be used.
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="59" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+
+          <xsd:attribute name="seconds" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+              The number of seconds the event last (0 to 59)
+              A number greater than 59 cannot be used to describe an event
+              lasting more than one minute. The durationDays, durationHours or
+              durationMinutes elements must be used.
+            </xsd:documentation></xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:unsignedInt">
+                <xsd:minInclusive value="0" />
+                <xsd:maxInclusive value="59" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element minOccurs="0" maxOccurs="1" name="config" type="EventAgentConfigType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+
+
+  <!-- CONFIGURATION -->
+
+  <xsd:complexType name="GlobalAgentConfigType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The options defining how the ProActive runtime is
+      started.
+      Theses options apply to all the events
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="proactiveHome" type="ConfProactiveHomeType"/>
+      <xsd:element minOccurs="1" maxOccurs="1" name="javaHome" type="ConfJavaHomeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters" type="ConfJvmParametersType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="additionalCmdArgs" type="ConfAdditionalCmdArgsType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="memoryLimit" type="ConfMemoryLimitationType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="nbWorkers" type="ConfNbWorkersType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="portRange" type="ConfPortRangeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="EventAgentConfigType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="1" name="proactiveHome" type="ConfProactiveHomeType" />
+      <xsd:element minOccurs="0" maxOccurs="1" name="javaHome" type="ConfJavaHomeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters" type="ConfJvmParametersType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="additionalCmdArgs" type="ConfAdditionalCmdArgsType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="memoryLimit" type="ConfMemoryLimitationType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="nbWorkers" type="ConfNbWorkersType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="portRange" type="ConfPortRangeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:simpleType name="ConfProactiveHomeType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The path to the ProActive Programming or ProActive Scheduling installation directory
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConfJavaHomeType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The path to the Java installation directory
+    </xsd:documentation></xsd:annotation>
+    <xsd:list  itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="ConfJvmParametersType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The list of parameters to be passed to the JVM
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="unbounded" name="param" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ConfAdditionalCmdArgsType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The list of arguments to me passed to the node manager
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="unbounded" name="param" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ConfMemoryLimitationType" >
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The amount of memory in megabytes to give to each forked ProActive runtimes.
+      If a forked ProActive runtime uses more than this amount of memory, then ProActive runtime
+      or its childs are killed by the operating system.
+    </xsd:documentation></xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:unsignedInt"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="ConfNbRuntimesType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The number of ProActive runtimes to start (1 by default).
+
+      If 0 then this value is automatically computed from the number of available cpus.
+    </xsd:documentation></xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConfNbWorkersType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The number of ProActive workers to start per runtime (1 by default).
+
+      If present but empty then the node is started with "-w", which means that it will use as many workers as there are cores.
+    </xsd:documentation></xsd:annotation>
+    <xsd:union memberTypes="xsd:positiveInteger">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value=""/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:union>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConfProtocolType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The communication protocol to be used by the started ProActive runtime
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="ConfPortRangeType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      A range of the TCP ports to be used by the ProActive runtimes.
+
+      The number of ports in the range must be greater than the number of runtimes.
+    </xsd:documentation></xsd:annotation>
+    <xsd:attribute use="required" type="portType" name="first"/>
+    <xsd:attribute use="required" type="portType" name="last"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="ConfOnRuntimeExitScriptType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+      The path to an executable to be started each time a forked ProActive runtime exits. It can be used to cleanup some ressources, or to gather some results
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+
+
+
+
+  <xsd:simpleType name="javaClassName" >
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="([\w]+\.)*[\w]+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="nonEmptyString">
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1" />
+      <xsd:pattern value=".*[^\s].*" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="autoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="auto"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="portType">
+    <xsd:restriction base="xsd:unsignedShort">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxExclusive value="65535"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

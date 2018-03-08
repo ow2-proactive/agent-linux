@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:proactive:agent:1.1:windows"
+  xmlns="urn:proactive:agent:1.1:windows"
+  elementFormDefault="qualified">
+
+ <xsd:redefine schemaLocation="agent-common.xsd">
+    <xsd:complexType name="GlobalAgentConfigType">
+      <xsd:complexContent>
+        <xsd:extension base="GlobalAgentConfigType">
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="processPriority">
+              <xsd:annotation><xsd:documentation xml:lang="en">
+
+              </xsd:documentation></xsd:annotation>
+              <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Idle"/>
+                  <xsd:enumeration value="BelowNormal"/>
+                  <xsd:enumeration value="Normal"/>
+                  <xsd:enumeration value="AboveNormal"/>
+                  <xsd:enumeration value="High"/>
+                  <xsd:enumeration value="Realtime"/>
+               </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element minOccurs="1" maxOccurs="1" name="maxCpuUsage">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+
+                </xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:positiveInteger">
+                  <xsd:maxInclusive value="100"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="EventAgentConfigType">
+      <xsd:complexContent>
+        <xsd:extension base="EventAgentConfigType">
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="processPriority">
+              <xsd:annotation><xsd:documentation xml:lang="en">
+
+              </xsd:documentation></xsd:annotation>
+              <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Idle"/>
+                  <xsd:enumeration value="BelowNormal"/>
+                  <xsd:enumeration value="Normal"/>
+                  <xsd:enumeration value="AboveNormal"/>
+                  <xsd:enumeration value="High"/>
+                  <xsd:enumeration value="Realtime"/>
+               </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element minOccurs="1" maxOccurs="1" name="maxCpuUsage">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+
+                </xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:positiveInteger">
+                  <xsd:maxInclusive value="100"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:redefine>
+</xsd:schema>

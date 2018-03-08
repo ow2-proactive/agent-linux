@@ -88,6 +88,7 @@ class EventConfig(object):
         self.proactiveHome = None
         self.javaHome = None
         self.jvmParameters = []
+        self.additionalCmdArgs = []
         self.memoryLimit = 0
         self.cgroup_mnt_point = None
         self.nbRuntimes = 1
@@ -189,6 +190,12 @@ class EventConfig(object):
             self.jvmParameters = []
         for node in lx:
             self.jvmParameters.append(node.text)
+
+        lx = confNode.xpath("./a:additionalCmdArgs/a:param", namespaces = {'a' : main.xmlns})
+        if len(lx) != 0 and not isRoot:
+            self.additionalCmdArgs = []
+        for node in lx:
+            self.additionalCmdArgs.append(node.text)
 
         lx = confNode.xpath("./a:nbRuntimes", namespaces = {'a' : main.xmlns})
         assert len(lx) == 1 or len(lx) == 0
@@ -513,6 +520,8 @@ class StartEvent(SpecificEvent):
         cmd.append(self.action.getClass())
         map(cmd.append, self.action.getArguments())
 
+        for param in self.config.additionalCmdArgs:
+            cmd.append(param)
 
         if self.config.nbWorkers is not None and self.config.nbWorkers >= 1:
             cmd.append("-w")
