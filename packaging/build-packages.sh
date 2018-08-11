@@ -8,7 +8,7 @@ URL="http://activeeon.com"
 
 VERSION=${VERSION:-1.0.3}
 
-[ -n "$NODE" ] || ( echo "NODE variable should point to a directory with ProActiveNode archives"; exit 1 )
+[ -n "$NODE" ] || ( echo "NODE variable should point to a directory with activeeon_enterprise-node archives"; exit 1 )
 
 THIS=$(cd $(dirname $0); pwd)
 REPO=$(dirname $THIS)
