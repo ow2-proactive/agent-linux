@@ -42,13 +42,13 @@ package () {
 
     case $ARCH in
         amd64)
-            local NODE_PACKAGE=$NODE/ProActiveNode-linux-x64-*.zip
+            local NODE_PACKAGE=$NODE/activeeon_enterprise-node-linux-x64-*.zip
             ;;
         i386)
-            local NODE_PACKAGE=$NODE/ProActiveNode-linux-i586-*.zip
+            local NODE_PACKAGE=$NODE/activeeon_enterprise-node-linux-i586-*.zip
     esac
 
-    (cd $PREFIX/opt; unzip $NODE_PACKAGE; mv ProActiveNode* proactive-node)
+    (cd $PREFIX/opt; unzip $NODE_PACKAGE; mv activeeon_enterprise-node* proactive-node)
 
     mkdir -p $BUILD/distributions
     ~/gems/bin/fpm -s dir -t $KIND -C $PREFIX -p $BUILD/distributions/ \
