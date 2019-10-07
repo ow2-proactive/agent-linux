@@ -11,5 +11,6 @@ USER packager
 
 ENV HOME /home/packager
 ENV GEM_HOME /home/packager/gems
+ENV PATH="/home/packager/bin:${PATH}"
 
 RUN gem install fpm
