@@ -20,7 +20,7 @@ KIND=$1
 [ -n "$KIND" ] || ( echo "usage: $0 <deb|rpm>"; exit 1 )
 
 install_fpm () {
-    [ -f "$GEM_HOME/bin/fpm" ] || gem install fpm --install-dir $GEM_HOME --no-user-install
+    [ -f "$GEM_HOME/bin/fpm" ] || gem install fpm -f --install-dir $GEM_HOME --no-user-install
 }
 
 package () {
