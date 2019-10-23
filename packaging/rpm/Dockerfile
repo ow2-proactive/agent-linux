@@ -13,4 +13,4 @@ ENV HOME /home/packager
 ENV GEM_HOME /home/packager/gems
 ENV PATH="/home/packager/bin:${PATH}"
 
-RUN gem install fpm -f --install-dir ${GEM_HOME} --no-user-install
+RUN gem install fpm -f -V --install-dir ${GEM_HOME} --no-user-install
