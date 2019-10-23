@@ -20,7 +20,7 @@ KIND=$1
 [ -n "$KIND" ] || ( echo "usage: $0 <deb|rpm>"; exit 1 )
 
 install_fpm () {
-    [ -f "$GEM_HOME/gems/fpm" ] || gem install fpm -f -V --install-dir ${GEM_HOME} --no-user-install
+    [ -f "$GEM_HOME/bin/fpm" ] || gem install fpm -f -V --no-user-install --bindir $GEM_HOME/bin
 }
 
 package () {
@@ -51,7 +51,7 @@ package () {
     (cd $PREFIX/opt; unzip $NODE_PACKAGE; mv activeeon_enterprise-node* proactive-node)
 
     mkdir -p $BUILD/distributions
-    ~/gems/gems/fpm -s dir -t $KIND -C $PREFIX -p $BUILD/distributions/ \
+    ~/gems/bin/fpm -s dir -t $KIND -C $PREFIX -p $BUILD/distributions/ \
         -n "proactive-agent" \
         -v $VERSION \
         -a $ARCH \
