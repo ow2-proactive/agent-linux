@@ -3,7 +3,7 @@
 
 FROM centos
 
-RUN yum -y install wget ruby ruby-devel gcc make rsync tar gzip rpm-build
+RUN yum -y install git wget ruby ruby-devel gcc make rsync tar gzip rpm-build
 
 RUN /usr/sbin/useradd --create-home --shell /bin/bash --uid 1000 packager
 
