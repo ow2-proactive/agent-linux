@@ -41,14 +41,34 @@ import utils
 import re
 import traceback
 import atexit
+import platform
 
 from errors import *
 
 try:
     from lxml import etree
 except (ImportError), e:
-    print >> sys.stderr, AgentSetupError("lxml not available: %s" % e)
-    sys.exit(7)
+    # lxml is not installed
+    try:
+        #try installing the wheel packages
+        import zipfile
+        fdir=os.path.dirname(__file__)
+        if fdir=='':
+            packages_path="./packages"
+        else:
+            packages_path=fdir+"/packages"
+        if platform.architecture()[0] == "64bit":
+            with zipfile.ZipFile(packages_path+"/lxml-4.6.3-cp27-cp27mu-manylinux1_x86_64.whl","r") as zip_ref:
+                zip_ref.extractall(packages_path)
+        else:
+            with zipfile.ZipFile(packages_path+"/lxml-4.6.3-cp27-cp27mu-manylinux1_i686.whl","r") as zip_ref:
+                zip_ref.extractall(packages_path)
+        sys.path.append(packages_path)
+        from lxml import etree
+    except (ImportError), e:
+        #importing using the wheel packages failed
+        print >> sys.stderr, AgentSetupError("lxml not available: %s" % e)
+        sys.exit(7)
 
 '''
 This is the ProActive Linux agent main entry point
@@ -132,6 +152,8 @@ def _log_debug_info(logger):
     logger.debug("cwd: %s" % (os.getcwd()))
     logger.debug("agent path: %s" % (os.path.dirname(os.path.abspath(__file__))))
     logger.debug("#core: %s" % utils.get_number_of_cpus())
+    logger.debug("system architecture: %s" % platform.architecture()[0])
+    logger.debug("python-lxml dir: %s" % etree.__file__.split("/etree")[0])
 
 def daemonize(pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
     """
