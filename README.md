@@ -44,6 +44,28 @@ palinagent/daemon/tests/testXMLConfig.py
 
 
 
+# Building locally
+
+
+The `deb` and `rpm` packages can be built locally following these steps:
+
+1. Install `ruby-dev` for Debian distributions or `ruby-devel` for Redhat distributions.
+	```bash
+	sudo apt install ruby-dev
+	```
+	or
+	```bash
+	sudo yum install ruby-devel
+	```
+
+2. Create a new directory `node` and place the archives of `activeeon_enterprise-node-linux-i586-X` and `activeeon_enterprise-node-linux-x64-X` in it.
+
+3. Finally execute the `run-build.sh` as root.
+	 ```bash
+	sudo ./run-build.sh
+	```
+Once finished you can find the packages in `build/distributions`
+
 
 ---
 Copyright (C) 2007-2016 ActiveEon
