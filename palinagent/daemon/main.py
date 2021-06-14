@@ -47,8 +47,28 @@ from errors import *
 try:
     from lxml import etree
 except (ImportError), e:
-    print >> sys.stderr, AgentSetupError("lxml not available: %s" % e)
-    sys.exit(7)
+    # lxml is not installed
+    try:
+        #try installing the wheel packages
+        import platform
+        import zipfile
+        fdir=os.path.dirname(__file__)
+        if fdir=='':
+            packages_path="./packages"
+        else:
+            packages_path=fdir+"/packages"
+        if platform.architecture()[0] == "64bit":
+            with zipfile.ZipFile(packages_path+"/lxml-4.6.3-cp27-cp27mu-manylinux1_x86_64.whl","r") as zip_ref:
+                zip_ref.extractall(packages_path)
+        else:
+            with zipfile.ZipFile(packages_path+"/lxml-4.6.3-cp27-cp27mu-manylinux1_i686.whl","r") as zip_ref:
+                zip_ref.extractall(packages_path)
+        sys.path.append(packages_path)
+        from lxml import etree
+    except (ImportError), e:
+        #importing using the wheel packages failed
+        print >> sys.stderr, AgentSetupError("lxml not available: %s" % e)
+        sys.exit(7)
 
 '''
 This is the ProActive Linux agent main entry point
