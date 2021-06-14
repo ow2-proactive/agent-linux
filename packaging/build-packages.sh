@@ -59,7 +59,8 @@ package () {
         --vendor "$VENDOR" \
         --description "$DESCRIPTION" \
         --url "$URL" \
-        -d python -d python-lxml \
+        -d python \
+        --deb-recommends python-lxml \
         --post-install $REPO/packaging/$KIND/postinst  \
         --pre-uninstall $REPO/packaging/$KIND/prerm \
         --post-uninstall $REPO/packaging/$KIND/postrm \
