@@ -41,6 +41,7 @@ import utils
 import re
 import traceback
 import atexit
+import platform
 
 from errors import *
 
@@ -50,7 +51,6 @@ except (ImportError), e:
     # lxml is not installed
     try:
         #try installing the wheel packages
-        import platform
         import zipfile
         fdir=os.path.dirname(__file__)
         if fdir=='':
@@ -152,6 +152,8 @@ def _log_debug_info(logger):
     logger.debug("cwd: %s" % (os.getcwd()))
     logger.debug("agent path: %s" % (os.path.dirname(os.path.abspath(__file__))))
     logger.debug("#core: %s" % utils.get_number_of_cpus())
+    logger.debug("system architecture: %s" % platform.architecture()[0])
+    logger.debug("python-lxml dir: %s" % etree.__file__.split("/etree")[0])
 
 def daemonize(pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
     """
