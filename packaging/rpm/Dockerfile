@@ -19,4 +19,6 @@ ENV HOME /home/packager
 ENV GEM_HOME /home/packager/gems
 ENV PATH="/home/packager/bin:${PATH}"
 
+RUN gem install dotenv -v 2.8.1
+
 RUN gem install fpm -f -V --no-user-install --bindir $GEM_HOME/bin

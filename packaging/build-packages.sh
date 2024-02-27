@@ -20,7 +20,7 @@ KIND=$1
 [ -n "$KIND" ] || ( echo "usage: $0 <deb|rpm>"; exit 1 )
 
 install_fpm () {
-    [ -f "$GEM_HOME/bin/fpm" ] || gem install fpm -f -V --no-user-install --bindir $GEM_HOME/bin
+    [ -f "$GEM_HOME/bin/fpm" ] || gem install dotenv -v 2.8.1 || gem install fpm -f -V --no-user-install --bindir $GEM_HOME/bin
 }
 
 package () {
