@@ -51,7 +51,7 @@
             <nodename>PA-AGENT_NODE</nodename>
             <!-- Empty URL means discovery is used -->
             <url></url>
-            <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
+            <credential>/opt/proactive-node/config/authentication/credentials/rm.cred</credential>
         </rmConnection>
     </connections>
 </agent>
